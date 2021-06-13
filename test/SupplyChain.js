@@ -142,30 +142,28 @@ contract("SupplyChain", accounts => {
       console.log("item satate is:", StateName[resultBufferTwo[5]]);
 
       // Verify the result set
-      // assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State');
-      // assert.equal(resultBufferTwo[6], distributorID, 'Error: Invalid distributor ID');
+      assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State');
+      assert.equal(resultBufferTwo[6], distributorID, 'Error: Invalid distributor ID');
       truffleAssert.eventEmitted(result, 'Sold');
   })    
 
-  // // 6th Test
-  // it("Testing smart contract function shipItem() that allows a distributor to ship coffee", async() => {
-  //     const supplyChain = await SupplyChain.deployed()
+  // 6th Test
+  it("Testing smart contract function shipItem() that allows a distributor to ship coffee", async() => {
+      const supplyChain = await SupplyChain.deployed()
       
-  //     // Declare and Initialize a variable for event
-      
-      
-  //     // Watch the emitted event Shipped()
-      
+      // Mark an item as Shipped by calling function shipItem()
+      let result = await supplyChain.shipItem(upc, {from: distributorID});
+      itemState++;        
 
-  //     // Mark an item as Sold by calling function buyItem()
-      
+      // Retrieve the just now saved item from blockchain by calling function fetchItem()
+      const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
+      const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
+      console.log("item satate is:", StateName[resultBufferTwo[5]]);
 
-  //     // Retrieve the just now saved item from blockchain by calling function fetchItem()
-      
-
-  //     // Verify the result set
-            
-  // })    
+      // Verify the result set
+      assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State');
+      truffleAssert.eventEmitted(result, 'Shipped');       
+  })    
 
   // // 7th Test
   // it("Testing smart contract function receiveItem() that allows a retailer to mark coffee received", async() => {
