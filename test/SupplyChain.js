@@ -1,4 +1,6 @@
+const truffleAssert = require('../client/node_modules/truffle-assertions');
 const SupplyChain = artifacts.require("./SupplyChain.sol");
+
 
 var accounts;
 var owner;
@@ -37,17 +39,14 @@ contract("SupplyChain", accounts => {
       await supplyChain.addFarmer(originFarmerID)
       
       // Declare and Initialize a variable for event
-      // var eventEmitted = false
-      
-      // // Watch the emitted event Harvested()
-      // var event = supplyChain.Harvested()
-      // await event.watch((err, res) => {
-      //     eventEmitted = true
-      // })
+      var eventEmitted = false
 
       // Mark an item as Harvested by calling function harvestItem()
-      await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, {from: originFarmerID})
+      let result = await supplyChain.harvestItem(upc, originFarmerID, originFarmName, originFarmInformation, originFarmLatitude, originFarmLongitude, productNotes, {from: originFarmerID})
+      // console.log(result);
+      
 
+           
       // Retrieve the just now saved item from blockchain by calling function fetchItem()
       const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
       const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
@@ -62,6 +61,6 @@ contract("SupplyChain", accounts => {
       assert.equal(resultBufferOne[6], originFarmLatitude, 'Error: Missing or Invalid originFarmLatitude')
       assert.equal(resultBufferOne[7], originFarmLongitude, 'Error: Missing or Invalid originFarmLongitude')
       assert.equal(resultBufferTwo[5], 0, 'Error: Invalid item State')
-      // assert.equal(eventEmitted, true, 'Invalid event emitted')        
+      truffleAssert.eventEmitted(result, 'Harvested')       
   })  
 });
