@@ -92,7 +92,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     modifier checkValue(uint256 _upc) {
         uint256 _price = items[_upc].productPrice;
         uint256 amountToReturn = msg.value - _price;
-        address payable upcAddress = payable(items[_upc].consumerID);
+        address payable upcAddress = payable(msg.sender);
         upcAddress.transfer(amountToReturn);
         _;
     }
@@ -231,7 +231,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
         packed(_upc)
         // Call modifier to verify caller of this function
         verifyCaller(items[_upc].ownerID)
-                // only farnmers can use this
+        // only farnmers can use this
         onlyFarmer
 
     {
@@ -239,7 +239,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
         items[_upc].productPrice = _price;
         items[_upc].itemState = State.ForSale;
         // Emit the appropriate event
-        emit ForSale(upc);(_upc);
+        emit ForSale(upc);
     }
 
     // Define a function 'buyItem' that allows the disributor to mark an item 'Sold'
@@ -248,20 +248,24 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
     function buyItem(uint256 _upc)
         public
         payable
-    // Call modifier to check if upc has passed previous supply chain stage
-
-    // Call modifer to check if buyer has paid enough
-
-    // Call modifer to send any excess ether back to buyer
+        // Call modifier to check if upc has passed previous supply chain stage
+        forSale(_upc)
+        // Call modifer to check if buyer has paid enough
+        paidEnough(_upc)
+        // Call modifer to send any excess ether back to buyer
+        checkValue(_upc)
+        // only farnmers can use this
+        onlyDistributor
 
     {
         // Update the appropriate fields - ownerID, distributorID, itemState
         items[_upc].ownerID = msg.sender;
         items[_upc].distributorID = msg.sender;
-        items[_upc].itemState = State.Purchased;
+        items[_upc].itemState = State.Sold;
         // Transfer money to farmer
 
         // emit the appropriate event
+        emit Sold(upc);
     }
 
     // Define a function 'shipItem' that allows the distributor to mark an item 'Shipped'
