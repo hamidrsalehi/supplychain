@@ -53,6 +53,7 @@ contract("SupplyChain", accounts => {
       // Retrieve the just now saved item from blockchain by calling function fetchItem()
       const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
       const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
+      console.log("item satate is:", StateName[resultBufferTwo[5]]);
 
       // Verify the result set
       assert.equal(resultBufferOne[0], sku, 'Error: Invalid item SKU')
@@ -104,25 +105,24 @@ contract("SupplyChain", accounts => {
       
   })    
 
-  // // 4th Test
-  // it("Testing smart contract function sellItem() that allows a farmer to sell coffee", async() => {
-  //     const supplyChain = await SupplyChain.deployed()
+  // 4th Test
+  it("Testing smart contract function sellItem() that allows a farmer to sell coffee", async() => {
+      const supplyChain = await SupplyChain.deployed()
       
-  //     // Declare and Initialize a variable for event
-      
-      
-  //     // Watch the emitted event ForSale()
-      
+      // Mark an item as Processed by calling function processtItem()
+      let result = await supplyChain.sellItem(upc, productPrice, {from: originFarmerID})
+      itemState++;
 
-  //     // Mark an item as ForSale by calling function sellItem()
-      
+      // Retrieve the just now saved item from blockchain by calling function fetchItem()
+      const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
+      const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
+      console.log("item satate is:", StateName[resultBufferTwo[5]]);
 
-  //     // Retrieve the just now saved item from blockchain by calling function fetchItem()
-      
-
-  //     // Verify the result set
+      // Verify the result set
+      assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State');
+      truffleAssert.eventEmitted(result, 'ForSale');
         
-  // })    
+  })    
 
   // // 5th Test
   // it("Testing smart contract function buyItem() that allows a distributor to buy coffee", async() => {
