@@ -165,25 +165,28 @@ contract("SupplyChain", accounts => {
       truffleAssert.eventEmitted(result, 'Shipped');       
   })    
 
-  // // 7th Test
-  // it("Testing smart contract function receiveItem() that allows a retailer to mark coffee received", async() => {
-  //     const supplyChain = await SupplyChain.deployed()
-      
-  //     // Declare and Initialize a variable for event
-      
-      
-  //     // Watch the emitted event Received()
-      
+  // 7th Test
+  it("Testing smart contract function receiveItem() that allows a retailer to mark coffee received", async() => {
+      const supplyChain = await SupplyChain.deployed()
 
-  //     // Mark an item as Sold by calling function buyItem()
-      
+      // Add a Retailer
+      await supplyChain.addRetailer(retailerID);
 
-  //     // Retrieve the just now saved item from blockchain by calling function fetchItem()
-      
+      // Mark an item as Shipped by calling function shipItem()
+      let result = await supplyChain.receiveItem(upc, {from: retailerID});
+      itemState++;  
 
-  //     // Verify the result set
+      // Retrieve the just now saved item from blockchain by calling function fetchItem()
+      const resultBufferOne = await supplyChain.fetchItemBufferOne.call(upc)
+      const resultBufferTwo = await supplyChain.fetchItemBufferTwo.call(upc)
+      console.log("item satate is:", StateName[resultBufferTwo[5]]);
+ 
+      // Verify the result set
+      assert.equal(resultBufferTwo[5], itemState, 'Error: Invalid item State');
+      assert.equal(resultBufferTwo[7], retailerID, 'Error: Invalid distributor ID');
+      truffleAssert.eventEmitted(result, 'Received'); 
            
-  // })    
+  })    
 
   // // 8th Test
   // it("Testing smart contract function purchaseItem() that allows a consumer to purchase coffee", async() => {
