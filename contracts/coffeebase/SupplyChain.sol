@@ -171,8 +171,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
         string memory _originFarmLatitude,
         string memory _originFarmLongitude,
         string memory _productNotes
-    ) public 
-    onlyFarmer
+    ) public
     {
         items[_upc].upc = _upc;
         items[_upc].sku = sku;
@@ -186,6 +185,8 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
         items[_upc].productNotes = _productNotes;
 
         items[_upc].itemState = defaultState;
+
+        // itemsHistory
 
         // Increment sku
         sku = sku + 1;
