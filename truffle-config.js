@@ -1,6 +1,7 @@
+require('./client/node_modules/dotenv').config();
 const path = require("path");
 const HDWalletProvider = require('@truffle/hdwallet-provider');
-var mnemonic = "broom light family give heart auto height mistake setup digital fossil illness";
+var mnemonic = process.env.MNEMONIC;
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
