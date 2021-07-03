@@ -8,7 +8,7 @@ import "./Roles.sol";
 contract RetailerRole {
     using Roles for Roles.Role;
     // Define 2 events, one for Adding, and other for Removing
-  
+
     // Define a struct 'retailers' by inheriting from 'Roles' library, struct Role
     Roles.Role private retailers;
 
