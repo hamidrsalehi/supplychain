@@ -172,6 +172,7 @@ contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole 
         string memory _originFarmLongitude,
         string memory _productNotes
     ) public
+    onlyFarmer
     {
         items[_upc].upc = _upc;
         items[_upc].sku = sku;
